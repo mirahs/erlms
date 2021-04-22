@@ -1,0 +1,16 @@
+{application, app,
+	[
+		{description,	"admin app"},
+		{vsn, 			"1.0"},
+		{applications,	[
+			kernel
+			,stdlib
+
+			,sasl
+			,erlweb
+			,mysql
+			,ibrowse
+		]},
+		{mod,			{app_app, []}}
+	]
+}.

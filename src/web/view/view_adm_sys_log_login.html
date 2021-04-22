@@ -1,0 +1,64 @@
+{% extends "view_base.html" %}
+
+{% block body %}
+<div class="container">
+    <form class="layui-form" method="get">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <input type="text" name="account" placeholder="账号" autocomplete="off" class="layui-input" value="{{ account }}">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <button class="layui-btn">搜索</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>登录账号</th>
+            <th>登录时间</th>
+            <th>登录状态</th>
+            <th>登录IP地址</th>
+            <th>登录IP段</th>
+            <th>登录位置</th>
+            <th>功能</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in datas %}
+        <tr>
+            <td>{{ data.account }}</td>
+            <td>{% ymdhis data.time %}</td>
+            <td>{{ data.status_desc }}</td>
+            <td>{{ data.ip }}</td>
+            <td>{{ data.ip_segment }}</td>
+            <td>{{ data.address }}</td>
+            <td>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" href="?act=del&id={{ data.id }}">删除</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div id="page"></div>
+</div>
+{% endblock %}
+
+
+{% block body_js %}
+<script src="{% web_static_url %}js/app.js?xx"></script>
+<script src="{% web_static_url %}layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['laypage'], function () {
+        const laypage = layui.laypage;
+
+
+        laypage_render(laypage, '{{ page.count }}', '{{ page.curr }}', '{{ page.limit }}', '{{ page.query }}');
+    });
+</script>
+{% endblock %}

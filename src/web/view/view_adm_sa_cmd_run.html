@@ -1,0 +1,131 @@
+{% extends "view_base.html" %}
+
+{% block body %}
+<div class="container">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="cmd_id" id="cmd_id">
+                        <option value="">请选择命令</option>
+                        {% for cmd in cmds %}
+                        <option value="{{ cmd.id }}">{{ cmd.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline" style="width: 300px;">
+                    <div class="layui-btn-group">
+                        <button class="layui-btn" lay-submit lay-filter="btnRun">执行</button>
+                        <button class="layui-btn" lay-submit lay-filter="btnRunAll">执行(全部主机)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <table id="host" lay-filter="host"></table>
+</div>
+{% endblock %}
+
+
+{% block body_js %}
+<script src="{% web_static_url %}layui/layui.js"></script>
+<script src="{% web_static_url %}js/app.js?xx"></script>
+<script type="text/javascript">
+    layui.use(['table', 'form', 'jquery'], function () {
+        const table = layui.table;
+        const form = layui.form;
+        const $ = layui.jquery;
+
+
+        table.render({
+            elem: '#host'
+            ,url: '?act=data' //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+                {type:'checkbox'}
+                ,{field: 'id', title: 'ID', sort: true}
+                ,{field: 'name', title: '主机名'}
+                ,{field: 'time', title: '添加时间'}
+                ,{field: 'remark', title: '备注'}
+            ]]
+        });
+
+
+        // 获取选择的 id 列表
+        const get_check_ids = function() {
+            const checkStatus = table.checkStatus('host');
+            let ids = [];
+            for (let idx in checkStatus.data) {
+                ids.push(checkStatus.data[idx].id);
+            }
+            return ids;
+        };
+
+
+        form.on('submit(btnRun)', function (obj) {
+            const cmd_id = parseInt($('#cmd_id').val());
+            console.log('cmd_id:', cmd_id);
+            if (isNaN(cmd_id)) {
+                layer.alert("请选择要执行的命令");
+                return false;
+            }
+
+            const ids = get_check_ids();
+            console.log('ids:', ids);
+            if (ids.length === 0) {
+                layer.alert('请选择主机');
+                return false;
+            }
+
+            const data = {};
+            data['cmd_id'] = cmd_id;
+            data['ids'] = ids;
+
+            request($, '?act=run', data, function (res, xhr) {
+                if (xhr) {
+                    console.log("返回响应信息:", xhr.responseText);
+                    layer.msg("网络错误");
+                }
+                res = JSON.parse(res);
+                if (res.code === 1) {
+                    layer.alert('执行命令成功, 请查看日志, id为 ' + res.data);
+                } else {
+                    layer.alert(res.msg);
+                }
+            });
+
+            return false;
+        });
+
+        form.on('submit(btnRunAll)', function (obj) {
+            const cmd_id = parseInt($('#cmd_id').val());
+            console.log('cmd_id:', cmd_id);
+            if (isNaN(cmd_id)) {
+                layer.alert("请选择要执行的命令");
+                return false;
+            }
+
+            const data = {};
+            data['cmd_id'] = cmd_id;
+
+            request($, '?act=run&is_all=1', data, function (res, xhr) {
+                if (xhr) {
+                    console.log("返回响应信息:", xhr.responseText);
+                    layer.msg("网络错误");
+                }
+                res = JSON.parse(res);
+                if (res.code === 1) {
+                    layer.alert('执行命令(全部主机)成功, 请查看日志, id为 ' + res.data);
+                } else {
+                    layer.alert(res.msg);
+                }
+            });
+
+            return false;
+        });
+    });
+</script>
+{% endblock %}

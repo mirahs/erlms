@@ -1,0 +1,51 @@
+{% extends "view_base.html" %}
+
+{% block body %}
+<div class="container">
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>任务名称</th>
+            <th>cron表达式</th>
+            <th>命令</th>
+            <th>添加时间</th>
+            <th><a class="layui-btn layui-btn-xs" href="?act=edit">添加</a></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in datas %}
+        <tr>
+            <td>{{ data.id }}</td>
+
+            <td>{{ data.name }}</td>
+            <td>{{ data.expr }}</td>
+            <td>{{ data.cmd }}</td>
+            <td>{% ymdhis data.time %}</td>
+            <td>
+                <div class="layui-btn-group">
+                    <a class="layui-btn layui-btn-info layui-btn-xs" href="?act=edit&id={{ data.id }}">修改</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" href="?act=del&id={{ data.id }}" onclick="return msg_yn();">删除</a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div id="page"></div>
+</div>
+{% endblock %}
+
+
+{% block body_js %}
+<script src="{% web_static_url %}layui/layui.js"></script>
+<script src="{% web_static_url %}js/app.js?xx"></script>
+<script type="text/javascript">
+    layui.use(['laypage'], function () {
+        const laypage = layui.laypage;
+
+
+        laypage_render(laypage, '{{ page.count }}', '{{ page.curr }}', '{{ page.limit }}', '{{ page.query }}');
+    });
+</script>
+{% endblock %}

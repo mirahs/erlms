@@ -1,0 +1,88 @@
+{% extends "view_base.html" %}
+
+{% block body %}
+<div class="container">
+    <form class="layui-form" method="get">
+        {% if log_id %}
+        <input type="hidden" name="log_id" value="{{ log_id }}" />
+        {% endif %}
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="cron_id" id="cron_id">
+                        <option value="">请选择任务</option>
+                        {% for cron in crons %}
+                        <option value="{{ cron.id }}">{{ cron.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="host_id" id="host_id">
+                        <option value="">请选择主机</option>
+                        {% for host in hosts %}
+                        <option value="{{ host.id }}">{{ host.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <button class="layui-btn">搜索</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>任务</th>
+            <th>主机</th>
+            <th>执行时间</th>
+            <th>执行结果</th>
+            <th>runtime(毫秒)</th>
+            <th>wall_clock(毫秒)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in datas %}
+        <tr>
+            <td>{{ data.id }}</td>
+            <td>{{ data.cron }}</td>
+            <td>{{ data.host }}</td>
+            <td>{% ymdhis data.time %}</td>
+            <td>{{ data.result | safe }}</td>
+            <td>{{ data.runtime }}</td>
+            <td>{{ data.wall_clock }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div id="page"></div>
+</div>
+{% endblock %}
+
+
+{% block body_js %}
+<script src="{% web_static_url %}js/app.js?xx"></script>
+<script src="{% web_static_url %}layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['laypage', 'form', 'jquery'], function () {
+        const laypage = layui.laypage;
+        const form = layui.form;
+        const $ = layui.jquery;
+
+
+        laypage_render(laypage, '{{ page.count }}', '{{ page.curr }}', '{{ page.limit }}', '{{ page.query }}');
+
+
+        $('#cron_id').val('{{ cron_id }}');
+        $('#host_id').val('{{ host_id }}');
+        form.render();
+    });
+</script>
+{% endblock %}

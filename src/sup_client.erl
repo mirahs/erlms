@@ -1,0 +1,53 @@
+%% -*- coding: latin-1 -*-
+-module(sup_client).
+
+-behaviour(supervisor).
+
+-export([
+    start_link/1
+
+    ,init/1
+]).
+
+-include("common.hrl").
+-include("cross.hrl").
+
+
+%%%===================================================================
+%%% API
+%%%===================================================================
+
+start_link(Args) ->
+    ?INFO("[~w] 正在启动监控树...", [?MODULE]),
+    supervisor:start_link({local, ?MODULE}, ?MODULE, Args).
+
+
+%%%===================================================================
+%%% supervisor callback functions
+%%%===================================================================
+
+init(Args) ->
+    %% core
+    List1 = get_core(Args),
+    %% 逻辑模块
+    List2 = get_mod(Args),
+    {ok, {{one_for_one, 50, 1}, boot_misc:swap_sup_child(List1 ++ List2)}}.
+
+
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
+
+%% 核心模块
+get_core([DirVar | _]) ->
+    [
+        {logger_file, {logger_file, start_link, [DirVar]}}
+        ,{sys_env, {sys_env, start_link, [[?MODULE, ?cross_type_server, DirVar]]}}
+        ,{crontab, {crontab, start_link, [?cross_type_client]}}
+    ].
+
+%% 逻辑模块
+get_mod(_Args) ->
+    [
+        {cross, {cross, start_link, []}}
+    ].

@@ -1,0 +1,80 @@
+{% extends "view_base.html" %}
+
+{% block body %}
+<div class="container">
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>{{ title }}</legend>
+    </fieldset>
+
+    <form class="layui-form">
+        {% if data %}
+        <input type="hidden" name="id" value="{{ data.id }}" />
+        {% endif %}
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" value="{{ data.name }}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">cron表达式</label>
+            <div class="layui-input-inline">
+                <textarea rows="5" name="expr" lay-verify="required" placeholder="" class="layui-textarea">{{ data.expr }}</textarea>
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                格式为: 分 时 日 月 周, 中间用空格分开<br />
+                分 范围 0-59, 时 范围 0-23, 日 范围 1-31, 月 范围 1-12, 周 范围 1-7<br />
+                * 代表所有, 如 * * * * * 表示每分钟<br />
+                单个数字代表指定时间段, 如 2 * * * * 表示每小时的第 2 分钟<br />
+                数字列表代表多个时间段, 如 [1,5,6,10] * * * * 表示每小时的 1 5 6 10 分钟
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">命令</label>
+            <div class="layui-input-inline">
+                <input type="text" name="cmd" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" value="{{ data.cmd }}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="btnSubmit">立即提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+{% block body_js %}
+<script src="{% web_static_url %}layui/layui.js"></script>
+<script src="{% web_static_url %}js/app.js?xx"></script>
+<script type="text/javascript">
+    layui.use(['layer', 'form', 'jquery'], function() {
+        const form = layui.form;
+        const $ = layui.jquery;
+
+
+        form.on('submit(btnSubmit)', function (obj) {
+            const data = obj.field;
+
+            request($, '', data, function (res, xhr) {
+                if (xhr) {
+                    console.log("返回响应信息:", xhr.responseText);
+                    layer.msg("网络错误");
+                }
+                res = JSON.parse(res);
+                if (res.code === 1) {
+                    alert('{{ title }}成功');
+                    location.href = 'cron';
+                } else {
+                    layer.msg(res.msg);
+                }
+            }, 'post');
+
+            return false;
+        });
+    });
+</script>
+{% endblock %}

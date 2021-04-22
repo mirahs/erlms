@@ -1,0 +1,12 @@
+{% extends "view_base.html" %}
+
+{% block body %}
+<div class="container">
+	{% if result %}
+	{{ result | safe }}
+	{% endif %}
+	<a class="layui-btn layui-btn-info" href="?act=update">更新文件</a>
+	<a class="layui-btn layui-btn-info" href="?act=reload">热更新(包括更新文件)</a>
+	<a class="layui-btn layui-btn-danger" href="?act=restart">重启</a>
+</div>
+{% endblock %}

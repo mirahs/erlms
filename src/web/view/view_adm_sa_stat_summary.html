@@ -1,0 +1,170 @@
+{% extends "view_base.html" %}
+
+{% block body %}
+<div class="container">
+    <form class="layui-form" method="get">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="host_id" id="host_id">
+                        <option value="">请选择主机</option>
+                        {% for host in hosts %}
+                        <option value="{{ host.id }}">{{ host.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="num" id="num">
+                        <option value="">请选择显示数量</option>
+                        <option value="10">10条</option>
+                        <option value="20">20条</option>
+                        <option value="30">30条</option>
+                        <option value="50">50条</option>
+                        <option value="100">100条</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <button class="layui-btn">确认</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div id="main_load" style="float: left; margin: 0 15px 20px; width: 600px; height: 450px;"></div>
+    <div id="main_cpu_used" style="float: left; margin: 0 15px 20px; width: 600px; height: 450px;"></div>
+    <div id="main_mem" style="float: left; margin: 0 15px 20px; width: 600px; height: 450px;"></div>
+</div>
+{% endblock %}
+
+
+{% block body_js %}
+<script src="{% web_static_url %}layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['form', 'jquery'], function () {
+        const form = layui.form;
+        const $ = layui.jquery;
+
+
+        $('#host_id').val('{{ host_id }}');
+        $('#num').val('{{ num }}');
+        form.render();
+    });
+</script>
+
+
+<script src="{% web_static_url %}echarts/echarts.min.js"></script>
+<script type="text/javascript">
+    const ec_load = {{ ec_load | safe }};
+    const ec_cpu_used = {{ ec_cpu_used | safe }};
+    const ec_mem = {{ ec_mem | safe }};
+
+    var chartLoad = echarts.init(document.getElementById('main_load'));
+    var optionLoad = {
+        title: {
+            text: '负载统计'
+        },
+        tooltip: {},
+        legend: {
+            data: ['最近1分钟', '最近5分钟', '最近15分钟']
+        },
+        xAxis: {
+            //data: ["15:55","16:00"]
+            data: ec_load.x_axis
+        },
+        yAxis: {},
+        series: [
+            {
+                name: '最近1分钟',
+                type: 'line',
+                //data: [1000, 1000]
+                data: ec_load.load1_series
+            },
+            {
+                name: '最近5分钟',
+                type: 'line',
+                //data: [500, 800]
+                data: ec_load.load5_series
+            },
+            {
+                name: '最近15分钟',
+                type: 'line',
+                //data: [500, 800]
+                data: ec_load.load15_series
+            }
+        ]
+    };
+    chartLoad.setOption(optionLoad);
+
+    var chartCpuUsed = echarts.init(document.getElementById('main_cpu_used'));
+    var optionCpuUsed = {
+        title: {
+            text: 'cpu使用率统计'
+        },
+        tooltip: {},
+        legend: {
+            data: ['cpu使用率']
+        },
+        xAxis: {
+            //data: ["15:55","16:00"]
+            data: ec_cpu_used.x_axis
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} %'
+            }
+        },
+        series: [
+            {
+                name: 'cpu使用率',
+                type: 'line',
+                //data: [1000, 1000]
+                data: ec_cpu_used.used_series
+            }
+        ]
+    };
+    chartCpuUsed.setOption(optionCpuUsed);
+
+    var chartMem = echarts.init(document.getElementById('main_mem'));
+    var optionMem = {
+        title: {
+            text: '内存统计'
+        },
+        tooltip: {},
+        legend: {
+            data: ['主机内存', '使用内存']
+        },
+        xAxis: {
+            //data: ["15:55","16:00"]
+            data: ec_mem.x_axis
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} MB'
+            }
+        },
+        series: [
+            {
+                name: '主机内存',
+                type: 'bar',
+                //data: [1000, 1000]
+                data: ec_mem.total_series
+            },
+            {
+                name: '使用内存',
+                type: 'bar',
+                //data: [500, 800]
+                data: ec_mem.used_series,
+
+                barGap: "-100%" //设置 bar 之间的间隙, 0%是无间隙, -100%重叠
+            }
+        ]
+    };
+    chartMem.setOption(optionMem);
+</script>
+{% endblock %}

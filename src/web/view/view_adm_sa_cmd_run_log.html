@@ -1,0 +1,50 @@
+{% extends "view_base.html" %}
+
+{% block body %}
+<div class="container">
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>命令</th>
+            <th>执行时间</th>
+            <th>执行主机数量</th>
+            <th>执行主机成功数量</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in datas %}
+        <tr>
+            <td>{{ data.id }}</td>
+            <td>{{ data.cmd }}</td>
+            <td>{% ymdhis data.time %}</td>
+            <td>{{ data.cnt_all }}</td>
+            <td>{{ data.cnt_succ }}</td>
+            <td>
+                <div class="layui-btn-group">
+                    <a class="layui-btn layui-btn-info layui-btn-xs" href="cmd_run_log_detail?log_id={{ data.id }}">查看</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" href="?act=del&id={{ data.id }}">删除</a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div id="page"></div>
+</div>
+{% endblock %}
+
+
+{% block body_js %}
+<script src="{% web_static_url %}js/app.js?xx"></script>
+<script src="{% web_static_url %}layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['laypage'], function () {
+        const laypage = layui.laypage;
+
+
+        laypage_render(laypage, '{{ page.count }}', '{{ page.curr }}', '{{ page.limit }}', '{{ page.query }}');
+    });
+</script>
+{% endblock %}
