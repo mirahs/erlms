@@ -119,6 +119,29 @@ fun_sync()
     git push
 }
 
+fun_tar()
+{
+    cd ${DIR_ROOT}
+    fun_rel
+
+    DIR_TAR='./erlms/'
+    mkdir ${DIR_TAR} -p
+    rm -f erlms.tar.gz
+
+    for dirDep in $(ls deps)
+    do
+        mkdir ${DIR_TAR}deps/${dirDep} -p
+        \cp deps/${dirDep}/ebin ${DIR_TAR}deps/${dirDep}/ -r
+    done
+    \cp ebin ${DIR_TAR} -r
+    \cp priv ${DIR_TAR} -r
+    \cp ctl.sh ${DIR_TAR}
+    \cp elog.config ${DIR_TAR}
+
+    tar zcf erlms.tar.gz ${DIR_TAR}
+    rm -rf ${DIR_TAR}
+}
+
 
 copy_to_client()
 {
@@ -151,6 +174,7 @@ fun_help()
 	echo "stop_client           关闭客户端"
 
 	echo "sync                  发布版本"
+	echo "tar                   打包版本"
 
     exit 1
 }
