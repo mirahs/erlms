@@ -32,9 +32,10 @@ fun_dev()
 fun_rel()
 {
 	cd ${DIR_ROOT}
+	rm -rf deps/erlweb/ebin
 	rm -rf ebin
 	./rebar g-d
-	./rebar co
+	./rebar -D detached co
 
 	echo 编译模板开始
     erl -pa ${BEAM} -noshell -s erlweb_make_dtl -s c q -extra ./src/web/view ./ebin web_erlydtl_tag

@@ -45,7 +45,7 @@ get_core([DirVar | _]) ->
         {logger_file, {logger_file, start_link, [DirVar]}}
         ,{sys_env, {sys_env, start_link, [[?MODULE, ?cross_type_server, DirVar]]}}
         ,{uuid_mgr, {uuid_mgr, start_link, []}}
-        ,{erlweb_sup, {erlweb_sup, start_link, [WebArg]}, permanent, infinity, supervisor, [erlweb_sup]}
+        ,{erlweb_sup, {erlweb_sup, start_link, [WebArg#{dir_var => DirVar}]}, permanent, infinity, supervisor, [erlweb_sup]}
     ].
 
 %% 逻辑模块

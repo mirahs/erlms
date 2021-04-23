@@ -60,6 +60,7 @@ error(Format, Args, Mod, Line) ->
 %%%===================================================================
 
 init([DirVar]) ->
+    process_flag(trap_exit, true),
     do_init(DirVar).
 
 handle_call(_Request, _From, State) ->
@@ -93,12 +94,12 @@ do_init(DirVar) ->
         Other -> Other
     end.
 
--ifdef(debug).
-file_op(_DirVar) -> {ok, undefined}.
--else.
+-ifdef(detached).
 file_op(DirVar) ->
     Filename = DirVar ++ "app.log",
     file:open(Filename, [append]).
+-else.
+file_op(_DirVar) -> {ok, undefined}.
 -endif.
 
 %% @spec format(T, F, A, Mod, Line) -> list()
