@@ -9,10 +9,12 @@
 -define(DIR_PRIV,   ?DIR_ROOT ++ "priv/").
 
 %% MySQL 数据库
--define(db_admin,       db_admin). % 数据库池 ID
--define(mysql_username, "root").    % 账号
--define(mysql_password, "root").    % 密码
--define(mysql_database, "erlms").   % 数据库
+-define(db_admin,       db_admin).  % 数据库池 ID
+-define(mysql_host,     "127.0.0.1").% 主机
+-define(mysql_port,     3306).       % 端口
+-define(mysql_username, "root").     % 账号
+-define(mysql_password, "root").     % 密码
+-define(mysql_database, "erlms").    % 数据库
 
 -define(salt_conf,      adsIIEIdak4551).
 

@@ -19,7 +19,7 @@ node(Node, Salt) ->
         _:_ -> undefined
     end.
 
-%% 节点配置
+%% 节点配置(开发调试)
 node2('erlms_server@127.0.0.1', ?salt_conf) ->
     #{type => server, cookie => 'adfiDIEH4753477&&999'};
 node2('erlms_client@127.0.0.1', ?salt_conf) ->

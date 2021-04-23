@@ -53,5 +53,5 @@ check_detached() ->
 
 start_before(?cross_type_server) ->
     % MySQL 初始化
-    mysql:add_pool(?db_admin, ?mysql_username, ?mysql_password, ?mysql_database);
+    mysql:add_pool(?db_admin, ?mysql_host, ?mysql_port, ?mysql_username, ?mysql_password, ?mysql_database);
 start_before(_Type) -> ok.
