@@ -4,6 +4,7 @@
 
 ## 依赖
 - [erlang 20.3](https://www.erlang.org/downloads/20.3)
+- [erlweb 管理后台模板](https://github.com/mirahs/erlweb)
 
 ## Todo
 - [x] 根据节点类型(服务端, 客户端)启动程序
@@ -38,3 +39,5 @@ sh dev.sh start_client
 
 ### 测试
 浏览器输入 http://localhost:3001/adm/ 并输入账号 admin，密码 admin 登录管理系统
+
+因为是开发调试, 所以主机只能添加 127.0.0.1
