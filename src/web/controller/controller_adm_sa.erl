@@ -63,11 +63,12 @@ host(?web_post, Req, _Opts) ->
     {ok, Data, _Req2} = cowboy_req:read_urlencoded_body(Req),
     Id      = proplists:get_value(<<"id">>, Data, <<>>),
     Name    = proplists:get_value(<<"name">>, Data, <<>>),
-    SshPort = proplists:get_value(<<"ssh_port">>, Data, <<>>),
+    SshPort0= proplists:get_value(<<"ssh_port">>, Data, <<>>),
     SshUser = proplists:get_value(<<"ssh_username">>, Data, <<>>),
     SshPass = proplists:get_value(<<"ssh_password">>, Data, <<>>),
     Remark  = proplists:get_value(<<"remark">>, Data, <<>>),
     ?IF(Name =:= <<>>, ?web_failed("请输入正确的数据"), skip),
+    SshPort = ?IF(SshPort0 =:= <<>>, 22, SshPort0),
     Bind    = [{name, Name}, {ssh_port, SshPort}, {ssh_username, SshUser}, {ssh_password, SshPass}, {remark, Remark}],
     case Id of
         <<>> ->

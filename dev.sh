@@ -20,6 +20,8 @@ NODE_STOP='erlms_stop@127.0.0.1'
 fun_dev()
 {
 	cd ${DIR_ROOT}
+	rm -rf deps/erlweb/ebin
+    rm -rf deps/mysql/ebin
 	rm -rf ebin
 	chmod +x ./rebar
 	./rebar g-d
@@ -50,7 +52,7 @@ fun_start_server()
 {
     cd ${DIR_ROOT}
 
-    dirVar='var/'
+    dirVar='var/server/'
     mkdir -p ${dirVar}
 
     #erl -pa ${BEAM} -name ${NODE_SERVER} -config ./elog +P 1024000 ${KERNEL_ARGS} -s main start -extra ${dirVar}
@@ -59,10 +61,9 @@ fun_start_server()
 
 fun_start_client()
 {
-    copy_to_client
-    cd ${DIR_CLIENT}
+    cd ${DIR_ROOT}
 
-    dirVar=${DIR_CLIENT}var/
+    dirVar='var/client/'
     mkdir -p ${dirVar}
 
     #erl -pa ${BEAM} -name ${NODE_CLIENT} -config ./elog +P 1024000 ${KERNEL_ARGS} -s main start -extra ${dirVar}
@@ -78,8 +79,7 @@ fun_up_server()
 
 fun_up_client()
 {
-	copy_to_client
-    cd ${DIR_CLIENT}
+	cd ${DIR_ROOT}
 
     erl -pa ${BEAM} -name ${NODE_UP} -noshell -s main up -extra ${NODE_CLIENT}
 }
@@ -93,7 +93,7 @@ fun_stop_server()
 
 fun_stop_client()
 {
-    cd ${DIR_CLIENT}
+    cd ${DIR_ROOT}
 
     erl -pa ${BEAM} -name ${NODE_STOP} -noshell -s main stop -extra ${NODE_CLIENT}
 }
@@ -145,24 +145,6 @@ fun_tar()
 
     tar zcf erlms.tar.gz ${DIR_TAR}
     rm -rf ${DIR_TAR}
-}
-
-
-copy_to_client()
-{
-    cd ${DIR_ROOT}
-
-    mkdir -p ${DIR_CLIENT}
-
-    for dirDep in $(ls deps)
-    do
-        mkdir ${DIR_CLIENT}deps/${dirDep} -p
-        \cp deps/${dirDep}/ebin ${DIR_CLIENT}deps/${dirDep}/ -r
-    done
-    \cp ebin ${DIR_CLIENT} -r
-    \cp priv ${DIR_CLIENT} -r
-    \cp dev.sh ${DIR_CLIENT}
-    \cp elog.config ${DIR_CLIENT}
 }
 
 
