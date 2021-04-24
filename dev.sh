@@ -33,6 +33,7 @@ fun_rel()
 {
 	cd ${DIR_ROOT}
 	rm -rf deps/erlweb/ebin
+	rm -rf deps/mysql/ebin
 	rm -rf ebin
 	./rebar g-d
 	./rebar -D detached co
@@ -111,6 +112,7 @@ fun_sync()
     done
     \cp ebin ${DIR_REL} -r
     \cp priv ${DIR_REL} -r
+    \cp .gitignore_rel ${DIR_REL}.gitignore
     \cp ctl.sh ${DIR_REL}
     \cp elog.config ${DIR_REL}
 

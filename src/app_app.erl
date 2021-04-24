@@ -26,7 +26,7 @@ start(_StartType, _StartArgs) ->
             sys_code:init(),
 
             #{type := Type} = app_conf:node(node(), ?salt_conf),
-            start_before(Type),
+            start_before(Type, DirVar),
             Mod = util:to_atom("sup_" ++ util:to_list(Type)),
             Mod:start_link([DirVar | T]);
         _ -> {error, args_error}
@@ -51,7 +51,9 @@ check_detached() ->
     end.
 -endif.
 
-start_before(?cross_type_server) ->
+start_before(?cross_type_server, DirVar) ->
+    % MySQL 日志初始化
+    mysql:start_logger(DirVar),
     % MySQL 初始化
     mysql:add_pool(?db_admin, ?mysql_host, ?mysql_port, ?mysql_username, ?mysql_password, ?mysql_database);
-start_before(_Type) -> ok.
+start_before(_Type, _DirVar) -> ok.
