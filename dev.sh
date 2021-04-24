@@ -21,6 +21,7 @@ fun_dev()
 {
 	cd ${DIR_ROOT}
 	rm -rf ebin
+	chmod +x ./rebar
 	./rebar g-d
 	./rebar -D debug co
 
@@ -35,6 +36,7 @@ fun_rel()
 	rm -rf deps/erlweb/ebin
 	rm -rf deps/mysql/ebin
 	rm -rf ebin
+	chmod +x ./rebar
 	./rebar g-d
 	./rebar -D detached co
 
