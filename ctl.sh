@@ -18,7 +18,7 @@ fun_start_server()
 {
     cd ${DIR_ROOT}
 
-    dirVar='var/'
+    dirVar='var/server/'
     mkdir -p ${dirVar}
 
     erl -pa ${BEAM} -name ${NODE_SERVER} -config ./elog +P 1024000 ${KERNEL_ARGS} -hidden -detached -s main start -extra ${dirVar}
@@ -28,7 +28,7 @@ fun_start_client()
 {
     cd ${DIR_ROOT}
 
-    dirVar='var/'
+    dirVar='var/client/'
     mkdir -p ${dirVar}
 
     erl -pa ${BEAM} -name ${NODE_CLIENT} -config ./elog +P 1024000 ${KERNEL_ARGS} -hidden -detached -s main start -extra ${dirVar}
