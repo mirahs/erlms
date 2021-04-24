@@ -38,15 +38,15 @@ cron_add(CronId0, Expr, Cmd0) ->
     Cron = #cron{id = CronId, expr = Expr, cmd = util:to_list(Cmd0)},
     Crons= cron_get(),
     case lists:keytake(CronId, #cron.id, Crons) of
-        false -> sys_env:set(?env_crons, [Cron | Crons]);
-        {value, _Cron, CronsTmp} -> sys_env:set(?env_crons, [Cron | CronsTmp])
+        false -> sys_env:save(?env_crons, [Cron | Crons]);
+        {value, _Cron, CronsTmp} -> sys_env:save(?env_crons, [Cron | CronsTmp])
     end,
     ok.
 
 cron_del(CronId0) ->
     CronId  = util:to_integer(CronId0),
     Crons   = cron_get(),
-    sys_env:set(?env_crons, lists:keydelete(CronId, #cron.id, Crons)).
+    sys_env:save(?env_crons, lists:keydelete(CronId, #cron.id, Crons)).
 
 
 %%%===================================================================
