@@ -2,6 +2,9 @@
 
 ## 使用erlang开发的服务器管理系统
 
+## Thanks JetBrains
+[JetBrains IDEA](https://www.jetbrains.com/?from=erlms)
+
 ## 依赖
 - [erlang 20.3](https://www.erlang.org/downloads/20.3)
 - [erlweb 管理后台模板](https://github.com/mirahs/erlweb)
